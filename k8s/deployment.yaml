@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rick-morty-app-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rick-morty-app
+  template:
+    metadata:
+      labels:
+        app: rick-morty-app
+    spec:
+      containers:
+      - name: rick-morty-app
+        image: alejandro945/rick-morty:latest
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rick-morty-app-service
+spec:
+  selector:
+    app: rick-morty-app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

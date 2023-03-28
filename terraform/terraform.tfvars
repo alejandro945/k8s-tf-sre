@@ -1,0 +1,2 @@
+prefix="rm"
+location= "eastus"
