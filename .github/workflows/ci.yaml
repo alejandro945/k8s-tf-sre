@@ -5,15 +5,15 @@ on:
     branches: main
 
 jobs:
-  push_to_docker_hub:
+  build-and-push:
+    name: Build and Push image
     runs-on: ubuntu-latest
     steps:
       -
-        name: Checkout repository
-        uses: actions/checkout@v2
-
+        name: Checkout Repository
+        uses: actions/checkout@main
       - 
-        name: build and push to docker
+        name: Build and Push to Docker hub
         uses: docker/build-push-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -22,19 +22,22 @@ jobs:
           tag_with_ref: true
           tag_with_sha: true
           tags: ${{ github.sha }}
-
+  deploy-to-cluster:
+    name: Deploy to Cluster
+    runs-on: ubuntu-latest
+    needs: build-and-push
       - 
-        name: Deploy to cluster in azure
+        name: Deploy to Azure Cluster
         uses: steebchen/kubectl@v2.0.0
         with: # defaults to latest kubectl binary version
           config: ${{ secrets.KUBE_CONFIG_DATA }}
-          command: set image --record deployment/rick-morty-app-deployment rick-morty-app=alejandro945/rick-morty:latest
+          command: set image --record deployment.apps/rick-morty-app-deployment rick-morty-app=alejandro945/rick-morty:${{ github.sha }}
       - 
-        name: Verify deployment
+        name: Verify Deployment
         uses: steebchen/kubectl@v2.0.0
         with:
           config: ${{ secrets.KUBE_CONFIG_DATA }}
           version: v1.21.0 # specify kubectl binary version explicitly
           binaries-url: "https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl" # specify the download url explicitly
-          command: rollout status deployment/rick-morty-app-deployment
+          command: rollout status deployment.apps/rick-morty-app-deployment
     
