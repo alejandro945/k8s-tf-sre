@@ -14,7 +14,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1 className="title">Rick & Morty</h1>
+        <h1 className="title">Rick & Morty -- Alejandro Varela</h1>
         {characters ? (
           <Character characters={characters} setCharacters={setCharacters}/>
         ) : (
