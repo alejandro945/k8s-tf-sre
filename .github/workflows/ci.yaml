@@ -18,7 +18,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: alejandro945/rick-morty
+          repository: alejandro945/rick-morty:latest
           tag_with_ref: true
           tag_with_sha: true
           tags: ${{ github.sha }}
@@ -32,7 +32,7 @@ jobs:
         uses: steebchen/kubectl@v2.0.0
         with: # defaults to latest kubectl binary version
           config: ${{ secrets.KUBE_CONFIG_DATA }}
-          command: set image --record deployment.apps/rick-morty-app-deployment rick-morty-app=alejandro945/rick-morty:${{ github.sha }}
+          command: set image --record deployment.apps/rick-morty-app-deployment rick-morty-app=alejandro945/rick-morty:${{ github.sha }}:latest
       - 
         name: Verify Deployment
         uses: steebchen/kubectl@v2.0.0
